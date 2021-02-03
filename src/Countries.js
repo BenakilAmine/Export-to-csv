@@ -1,11 +1,11 @@
 import React, {useState, useRef, useEffect} from "react";
 import { useLazyQuery } from "@apollo/client";
-import { CSVLink } from "react-csv";
+import { CSVLink , CSVDownload} from "react-csv";
 import { GrDocumentCsv } from "react-icons/gr";
 import {
     GET_COUNTRIES
   } from "./queries/pays";
-
+  import {Country} from "./generated/graphql";
 
 export function DelayedCountries() {
 
@@ -13,12 +13,13 @@ export function DelayedCountries() {
   const [getCountries, { loading, data }] = useLazyQuery(GET_COUNTRIES);
   const csvRef = useRef(null);
 
-  useEffect(() => {
-      function downloadCsv() {
-        getCountries(csvRef.current.data, `filename.csv`);
-      }
-      downloadCsv();
-    }, [data, countries]);
+  // useEffect(() => {
+  //   fetch(getCountries()).then(res => setCountries(res.data))
+  //     // function downloadCsv() {
+  //     //   getCountries();
+  //     // }
+  //     // downloadCsv();
+  //   }, []);
 
 
   if (loading) return <p>Loading ...</p>;
@@ -26,31 +27,33 @@ export function DelayedCountries() {
     setCountries(data)
   
   }
-
+ 
+  const CSVButton =() => {
+    if (!data?.countries.lenght) {
+      console.log('mes data', data)
+      return (
+        <div>
+          <button onClick={getCountries}>
+          
+          {
+          data?.countries &&
+        <CSVDownload
+              target="_self"
+              data={data.countries}
+              >Download</CSVDownload>
+        }
+        Export
+          </button>
+        </div>
+        )
+    }
+  }
+  
   return (
-    <div>
-      <button
-      style={{listStyle: "none"}}
-      onClick={(e) => e.stopPropagation()}>
-        {/* {data && data.countries && */}
-        <CSVLink 
-          ref={csvRef}
-          data={data?.countries ? data.countries : []} 
-          //   asyncOnClick={true}
-            // onClick={(event, done) => {
-            //   getCountries()
-            //   setTimeout(() => {
-            //     done(); // Don't Proceed
-            //   }, 2000);
-            // }}
-          >
-            <GrDocumentCsv size={"22px"} style={{ fill: "#37374b" }} />
-          Export to CSV
-        </CSVLink>
-        {/* } */}
-      </button>
-      
-      
-    </div>
+    
+      <div>
+        <CSVButton/>
+      </div>
+  
   );
 }

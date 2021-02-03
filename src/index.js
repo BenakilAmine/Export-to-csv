@@ -13,6 +13,10 @@ const client = new ApolloClient({
   typeDefs,
   resolvers: {}
 });
+// const client = new ApolloClient({
+//   uri: "https://countries.trevorblades.com"
+// });
+
 
 ReactDOM.render(
   <ApolloProvider client={client}>
