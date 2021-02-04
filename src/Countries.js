@@ -5,11 +5,11 @@ import { GrDocumentCsv } from "react-icons/gr";
 import {
     GET_COUNTRIES
   } from "./queries/pays";
-  import {Country} from "./generated/graphql";
+  // import {Country} from "./generated/graphql";
 
 export function DelayedCountries() {
 
-  const [countries, setCountries] = useState([])
+  // const [countries, setCountries] = useState([])
   const [getCountries, { loading, data }] = useLazyQuery(GET_COUNTRIES);
   const csvRef = useRef(null);
 
@@ -24,36 +24,34 @@ export function DelayedCountries() {
 
   if (loading) return <p>Loading ...</p>;
   if (data && data.countries > 0) {
-    setCountries(data)
+    // setCountries(data)
   
   }
  
   const CSVButton =() => {
-    if (!data?.countries.lenght) {
-      console.log('mes data', data)
       return (
         <div>
           <button onClick={getCountries}>
-          
-          {
-          data?.countries &&
-        <CSVDownload
-              target="_self"
-              data={data.countries}
-              >Download</CSVDownload>
-        }
-        Export
+          Export to CSV
           </button>
+            {
+              data?.countries &&
+              <CSVDownload
+                target="_self"
+                data={data.countries}
+                >Download
+              </CSVDownload>
+            }
         </div>
         )
     }
-  }
+  
   
   return (
     
-      <div>
+      <li>
         <CSVButton/>
-      </div>
+      </li>
   
   );
 }
